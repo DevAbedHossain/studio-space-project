@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Headset, ShieldCheck, Sparkles, UserPlus } from "lucide-react";
+import GithubIcon from "@/components/shared/GithubIcon";
 import {
     CardContent,
     CardDescription,
@@ -15,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { signUp } from "@/lib/auth-client";
+import { getPasswordError } from "@/lib/password";
 import { toast } from "@/components/ui/toast";
 
 const trustPoints = [
@@ -36,25 +39,47 @@ const trustPoints = [
 ];
 
 const RegisterPage = () => {
+    const router = useRouter();
+    const [passwordError, setPasswordError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const userReg = Object.fromEntries(formData.entries()) as { name: string, image: string, email: string, password: string };
+        const userReg = Object.fromEntries(formData.entries()) as {
+            name: string;
+            image: string;
+            email: string;
+            password: string;
+        };
 
-        const { data, error } = await signUp.email({
-            ...userReg
-        })
+        // Block invalid passwords before they ever reach the server
+        const passwordError = getPasswordError(userReg.password);
+        if (passwordError) {
+            setPasswordError(passwordError);
+            return;
+        }
 
-        console.log("after submit", data, error)
-        if (data?.token) {
+        const { data, error } = await signUp.email({ ...userReg });
+
+        if (error) {
             toast.add({
-                title: "success",
-                description: "Successfully registred"
-            })
-            redirect("/")
+                title: "Registration failed",
+                description: error.message ?? "Something went wrong. Please try again.",
+                type: "error",
+            });
+            return;
+        }
+
+        if (data) {
+            toast.add({
+                title: "Success",
+                description: "Successfully registered.",
+                type: "success",
+            });
+            router.push("/");
         }
     };
+
 
     return (
         <section className="border-b py-16 lg:py-24">
@@ -156,17 +181,39 @@ const RegisterPage = () => {
                                 <div className="grid gap-2">
                                     <Label htmlFor="password">Password</Label>
                                     <Input
-                                        minLength={8}
                                         id="password"
                                         name="password"
                                         type="password"
                                         required
+                                        aria-invalid={passwordError ? true : undefined}
+                                        aria-describedby={
+                                            passwordError ? "password-error" : undefined
+                                        }
+                                        onChange={(e) => {
+                                            if (passwordError) {
+                                                // Re-validate live once an error is visible
+                                                setPasswordError(
+                                                    getPasswordError(e.target.value)
+                                                );
+                                            }
+                                        }}
                                     />
+                                    {passwordError ? (
+                                        <p
+                                            id="password-error"
+                                            className="text-destructive text-sm font-medium"
+                                        >
+                                            {passwordError}
+                                        </p>
+                                    ) : (
+                                        <p className="text-muted-foreground text-xs">
+                                            At least 6 characters, with an uppercase and a
+                                            lowercase letter.
+                                        </p>
+                                    )}
                                 </div>
 
-                                <Button type="submit">
-                                    Register
-                                </Button>
+                                <Button type="submit">Register</Button>
                             </form>
                         </CardContent>
 

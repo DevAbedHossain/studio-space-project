@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Headset, ShieldCheck, Sparkles, Zap } from "lucide-react";
+import GithubIcon from "@/components/shared/GithubIcon";
 import {
     CardContent,
     CardDescription,
@@ -14,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { signIn } from "@/lib/auth-client";
+import { getPasswordError } from "@/lib/password";
 import { toast } from "@/components/ui/toast";
 
 const trustPoints = [
@@ -35,29 +39,58 @@ const trustPoints = [
 ];
 
 const LoginPage = () => {
+    const router = useRouter();
+    const [passwordError, setPasswordError] = useState<string | null>(null);
+
+    const failToast = (description: string) =>
+        toast.add({
+            title: "Login failed",
+            description,
+            type: "error",
+        });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const user = Object.fromEntries(formData.entries()) as { email: string, password: string };
+        const user = Object.fromEntries(formData.entries()) as {
+            email: string;
+            password: string;
+        };
 
-        const { data, error } = await signIn.email({
+        // Block invalid passwords before they ever reach the server
+        const passwordError = getPasswordError(user.password);
+        if (passwordError) {
+            setPasswordError(passwordError);
+            return;
+        }
+
+        const { error } = await signIn.email({
             ...user,
-            callbackURL: "/"
-        })
+            callbackURL: "/",
+        });
 
-        console.log("after submit form", data, error)
+        if (error) {
+            failToast(error.message ?? "Invalid email or password.");
+            return;
+        }
 
         toast.add({
-            title: "success",
-            description: "Successfully login"
-        })
-
+            title: "Logged in",
+            description: "Welcome back to StudioSpace.",
+            type: "success",
+        });
+        router.push("/");
     };
 
-    const handleGoogle = async () => {
+    const handleSocialLogin = async (provider: "github" | "google") => {
+        const { error } = await signIn.social({
+            provider,
+            callbackURL: "/",
+        });
 
-
+        if (error) {
+            failToast(error.message ?? `${provider} login is unavailable.`);
+        }
     };
 
     return (
@@ -138,17 +171,39 @@ const LoginPage = () => {
                                 <div className="grid gap-2">
                                     <Label htmlFor="password">Password</Label>
                                     <Input
-                                        minLength={8}
                                         id="password"
                                         name="password"
                                         type="password"
                                         required
+                                        aria-invalid={passwordError ? true : undefined}
+                                        aria-describedby={
+                                            passwordError ? "password-error" : undefined
+                                        }
+                                        onChange={(e) => {
+                                            if (passwordError) {
+                                                // Re-validate live once an error is visible
+                                                setPasswordError(
+                                                    getPasswordError(e.target.value)
+                                                );
+                                            }
+                                        }}
                                     />
+                                    {passwordError ? (
+                                        <p
+                                            id="password-error"
+                                            className="text-destructive text-sm font-medium"
+                                        >
+                                            {passwordError}
+                                        </p>
+                                    ) : (
+                                        <p className="text-muted-foreground text-xs">
+                                            At least 6 characters, with an uppercase and a
+                                            lowercase letter.
+                                        </p>
+                                    )}
                                 </div>
 
-                                <Button type="submit">
-                                    Login
-                                </Button>
+                                <Button type="submit">Login</Button>
                             </form>
                         </CardContent>
 
@@ -157,7 +212,16 @@ const LoginPage = () => {
                                 type="button"
                                 variant="outline"
                                 className="w-full"
-                                onClick={handleGoogle}
+                                onClick={() => handleSocialLogin("github")}
+                            >
+                                <GithubIcon className="size-4" />
+                                Login with GitHub
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => handleSocialLogin("google")}
                             >
                                 Login with Google
                             </Button>
