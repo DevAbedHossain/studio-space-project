@@ -1,0 +1,21 @@
+/* Theme-styled pagination for the hero slider using global tokens */
+.hero-swiper {
+    overflow: visible;
+}
+
+.hero-swiper .swiper-pagination {
+    bottom: 1rem;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+    opacity: 0.35;
+    background: var(--foreground);
+    transition: all 0.3s;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: var(--primary);
+    width: 1.5rem;
+    border-radius: 999px;
+}
