@@ -4,6 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
 import { useSession } from "@/lib/auth-client";
@@ -50,44 +57,52 @@ const EditProfileForm = () => {
     };
 
     return (
-        <div className="border-border bg-card rounded-3xl border p-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-                <div className="grid gap-2">
-                    <Label htmlFor="profile-name">Name</Label>
-                    <Input
-                        id="profile-name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Edit Profile</CardTitle>
+                <CardDescription>
+                    Update how your name and avatar appear across StudioSpace.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="mt-1">
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-2">
+                        <Label htmlFor="profile-name">Name</Label>
+                        <Input
+                            id="profile-name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
 
-                <div className="grid gap-2">
-                    <Label htmlFor="profile-email">Email</Label>
-                    <Input id="profile-email" value={user.email} disabled />
-                    <p className="text-muted-foreground text-xs">
-                        Your email can&apos;t be changed.
-                    </p>
-                </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="profile-email">Email</Label>
+                        <Input id="profile-email" value={user.email} disabled />
+                        <p className="text-muted-foreground text-xs">
+                            Your email can&apos;t be changed.
+                        </p>
+                    </div>
 
-                <div className="grid gap-2 sm:col-span-2">
-                    <Label htmlFor="profile-image">Avatar URL</Label>
-                    <Input
-                        id="profile-image"
-                        placeholder="https://..."
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                    />
-                </div>
-            </div>
+                    <div className="grid gap-2 sm:col-span-2">
+                        <Label htmlFor="profile-image">Avatar URL</Label>
+                        <Input
+                            id="profile-image"
+                            placeholder="https://..."
+                            value={image}
+                            onChange={(e) => setImage(e.target.value)}
+                        />
+                    </div>
 
-            <Button
-                className="mt-6 cursor-pointer"
-                onClick={handleSave}
-                disabled={isSaving}
-            >
-                {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
-        </div>
+                    <Button
+                        className="cursor-pointer"
+                        onClick={handleSave}
+                        disabled={isSaving}
+                    >
+                        {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     );
 };
 
