@@ -16,12 +16,20 @@ import { authClient } from "@/lib/auth-client";
 import { useSession } from "@/lib/auth-client";
 
 const EditProfileForm = () => {
-    const { data: session } = useSession();
-    const user = session!.user;
+    const { data: session, isPending } = useSession();
+    const user = session?.user;
 
-    const [name, setName] = useState(user.name ?? "");
-    const [image, setImage] = useState((user.image as string) ?? "");
+    const [name, setName] = useState(user?.name ?? "");
+    const [image, setImage] = useState((user?.image as string) ?? "");
     const [isSaving, setIsSaving] = useState(false);
+
+    if (isPending || !user) {
+        return (
+            <p className="text-muted-foreground py-10 text-center text-sm">
+                {isPending ? "Loading profile..." : "Please sign in to edit your profile."}
+            </p>
+        );
+    }
 
     const handleSave = async () => {
         if (!name.trim()) {

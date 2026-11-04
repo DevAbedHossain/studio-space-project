@@ -41,7 +41,7 @@ const CategoryFeature = async () => {
                     {filterItem.slice(0, 7).map((item: IStudio) => (
                         <Link
                             key={item._id}
-                            href="/studios"
+                            href={`/studios/category/${item.category}`}
                             className="group flex flex-col items-center gap-3"
                         >
                             <div className="border-border relative size-24 overflow-hidden rounded-full border-2 transition-all duration-300 group-hover:border-primary group-hover:shadow-lg sm:size-28">
