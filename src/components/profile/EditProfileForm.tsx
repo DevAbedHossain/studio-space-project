@@ -1,0 +1,94 @@
+"use client";
+
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/toast";
+import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
+
+const EditProfileForm = () => {
+    const { data: session } = useSession();
+    const user = session!.user;
+
+    const [name, setName] = useState(user.name ?? "");
+    const [image, setImage] = useState((user.image as string) ?? "");
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleSave = async () => {
+        if (!name.trim()) {
+            toast.add({
+                type: "warning",
+                title: "Name is required",
+                description: "Please enter a name for your profile.",
+            });
+            return;
+        }
+
+        setIsSaving(true);
+        const { error } = await authClient.updateUser({
+            name: name.trim(),
+            image: image.trim() || undefined,
+        });
+        setIsSaving(false);
+
+        if (error) {
+            toast.add({
+                type: "error",
+                title: "Update failed",
+                description: error.message ?? "Something went wrong. Please try again.",
+            });
+            return;
+        }
+
+        toast.add({
+            type: "success",
+            title: "Profile updated",
+            description: "Your changes have been saved.",
+        });
+    };
+
+    return (
+        <div className="border-border bg-card rounded-3xl border p-6">
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                    <Label htmlFor="profile-name">Name</Label>
+                    <Input
+                        id="profile-name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+
+                <div className="grid gap-2">
+                    <Label htmlFor="profile-email">Email</Label>
+                    <Input id="profile-email" value={user.email} disabled />
+                    <p className="text-muted-foreground text-xs">
+                        Your email can&apos;t be changed.
+                    </p>
+                </div>
+
+                <div className="grid gap-2 sm:col-span-2">
+                    <Label htmlFor="profile-image">Avatar URL</Label>
+                    <Input
+                        id="profile-image"
+                        placeholder="https://..."
+                        value={image}
+                        onChange={(e) => setImage(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            <Button
+                className="mt-6 cursor-pointer"
+                onClick={handleSave}
+                disabled={isSaving}
+            >
+                {isSaving ? "Saving..." : "Save Changes"}
+            </Button>
+        </div>
+    );
+};
+
+export default EditProfileForm;

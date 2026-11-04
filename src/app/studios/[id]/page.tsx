@@ -24,20 +24,14 @@ const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }
     return (
         <section className="py-16 lg:py-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex gap-5 justify-between">
-                    {/* Back link */}
-                    <Link
-                        href="/#studios"
-                        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
-                    >
-                        <ChevronLeft className="size-4" />
-                        Back to studios
-                    </Link>
-                    <div className="flex gap-4">
-                        <Button variant="outline" className="cursor-pointer">Edit</Button>
-                        <Button variant="destructive" className="cursor-pointer">Delete</Button>
-                    </div>
-                </div>
+                {/* Back link */}
+                <Link
+                    href="/#studios"
+                    className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
+                >
+                    <ChevronLeft className="size-4" />
+                    Back to studios
+                </Link>
 
                 <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_380px]">
                     {/* Main content */}
