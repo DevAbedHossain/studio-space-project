@@ -11,7 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # Auth & database
 
 - better-auth with the MongoDB adapter (`@better-auth/mongo-adapter`), connected to MongoDB **Atlas** via the `MONGO_DB_URL` env var (required — `src/lib/auth.ts` throws at import time if missing; db name `studiospace`). A driver auth failure (`MongoServerError: bad auth`) only surfaces as an *empty-body 500* on sign-up/sign-in requests — verify connectivity with `node --env-file=.env diag-auth.mjs`.
-- `.env` needs `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` (better-auth reads these by convention; there is no `.env.example`).
+- `.env` needs `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `MONGO_DB_URL`, plus social provider keys `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` and `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` (all configured in `socialProviders` in `src/lib/auth.ts`). There is no `.env.example`.
 - All auth endpoints are handled by the catch-all route `src/app/api/auth/[...all]/route.ts` (`toNextJsHandler`); don't create individual `/api/auth/*` handlers.
 - Login/register pages live in the route group `src/app/(author)/` — the group stays out of the URL, so paths are `/login` and `/register`. Client-side auth calls use `src/lib/auth-client.ts` (`authClient`, `signIn`, `signUp`, `useSession`).
 
@@ -45,3 +45,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Use client components (`"use client"`) only where interactivity is needed (e.g. local state) — the App Router + RSC setup here renders server components by default.
 - Swiper slides import their own CSS inside the component (`swiper/css`, `swiper/css/effect-fade`, …) plus `src/styles/hero-slider.css` — don't move these into `globals.css`.
 - Site header component is `src/components/shared/Navber.tsx` (misspelled "Navber" — searching "Navbar" won't find it).
+- Known gap: the nav links to `/studios`, but there is no `src/app/studios/page.tsx` — only `src/app/studios/[id]/page.tsx` (and the studio list currently lives on the homepage via `src/components/homepage/studioslist.tsx`).

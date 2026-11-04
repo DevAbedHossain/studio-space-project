@@ -1,12 +1,14 @@
 import AboutUs from "@/components/homepage/aboutus";
 import HeroSection from "@/components/homepage/herosection";
 import HowItWork from "@/components/homepage/howitwork";
+import StudiosList from "@/components/homepage/studioslist";
 
 
 export default function Home() {
   return (
     <>
       <HeroSection />
+      <StudiosList />
       <HowItWork />
       <AboutUs />
     </>
