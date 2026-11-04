@@ -45,4 +45,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Use client components (`"use client"`) only where interactivity is needed (e.g. local state) — the App Router + RSC setup here renders server components by default.
 - Swiper slides import their own CSS inside the component (`swiper/css`, `swiper/css/effect-fade`, …) plus `src/styles/hero-slider.css` — don't move these into `globals.css`.
 - Site header component is `src/components/shared/Navber.tsx` (misspelled "Navber" — searching "Navbar" won't find it).
-- Known gap: the nav links to `/studios`, but there is no `src/app/studios/page.tsx` — only `src/app/studios/[id]/page.tsx` (and the studio list currently lives on the homepage via `src/components/homepage/studioslist.tsx`).
+- Known gap: the studio list currently lives on the homepage via `src/components/homepage/studioslist.tsx`; `/studios` and `/studios/[id]` render the full listing/detail pages.
