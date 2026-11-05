@@ -1,22 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { PackageOpen } from "lucide-react";
 import { IStudio } from "@/type/Studios";
 import StudioCardProfile from "./StudioCardProfile";
+import { toast } from "@/components/ui/toast";
 
 
 const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
     const [studios, setStudios] = useState<IStudio[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const router = useRouter();
 
     useEffect(() => {
-        if (!ownerEmail) {
-            setStudios([]);
-            setLoading(false);
-            return;
-        }
+        if (!ownerEmail) return;
 
         const fetchStudios = async () => {
             try {
@@ -46,6 +45,14 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
         fetchStudios();
     }, [ownerEmail]);
 
+    if (!ownerEmail) {
+        return (
+            <div className="py-12 text-center text-muted-foreground">
+                Sign in to see your studios.
+            </div>
+        );
+    }
+
     if (loading) {
         return (
             <div className="py-12 text-center text-muted-foreground">
@@ -62,16 +69,52 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
         );
     }
 
+    const handleEdit = (studio: IStudio) => {
+        router.push(`/studios/${studio._id}/edit`);
+    };
+
+    const handleDelete = async (studio: IStudio) => {
+        try {
+            const res = await fetch(`http://localhost:8000/studios/${studio._id}`, {
+                method: "DELETE",
+            });
+
+            if (!res.ok) {
+                toast.add({
+                    type: "error",
+                    title: "Couldn't delete the studio",
+                    description: "Something went wrong. Please try again.",
+                });
+                return;
+            }
+
+            toast.add({
+                type: "success",
+                title: "Studio deleted",
+                description: `${studio.title} has been removed from your listings.`,
+            });
+            setStudios((prev) => prev.filter((item) => item._id !== studio._id));
+        } catch {
+            toast.add({
+                type: "error",
+                title: "Couldn't delete the studio",
+                description: "Could not reach the server. Please try again.",
+            });
+        }
+    };
+
     return (
         <div className="space-y-6">
 
             {/* Studio cards */}
             {studios.length > 0 ? (
-                <div className="grid gap-5 sm:grid-cols-2">
+                <div className="grid gap-4">
                     {studios.map((studio) => (
                         <StudioCardProfile
                             key={studio._id}
                             studio={studio}
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
                         />
                     ))}
                 </div>
