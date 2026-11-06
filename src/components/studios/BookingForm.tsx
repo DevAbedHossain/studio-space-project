@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,79 +17,83 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const handleBooking = async () => {
+    const handleBooking = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const booking = Object.fromEntries(formData.entries());
 
-    };
+        console.log(booking, "Form data")
+    }
 
     return (
-        <div className="border-border bg-card rounded-3xl border p-6">
-            <p className="text-primary text-3xl font-bold">
-                ${studio.hourlyRate}
-                <span className="text-muted-foreground text-base font-normal">
-                    /hour
-                </span>
-            </p>
-
-            <div className="mt-5 grid gap-4">
-                <div className="grid gap-2">
-                    <Label htmlFor="booking-date">Date</Label>
-                    <Input
-                        id="booking-date"
-                        type="date"
-                        min={today}
-                    />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="grid gap-2">
-                        <Label htmlFor="booking-time">Start time</Label>
-                        <Input
-                            id="booking-time"
-                            type="time"
-                        />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="booking-hours">Duration (hr)</Label>
-                        <Input
-                            id="booking-hours"
-                            type="number"
-                            min="1"
-                            max={12}
-                            value={hours}
-                            onChange={(e) => setHours(Number(e.target.value))}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Price breakdown */}
-            <div className="border-border text-muted-foreground mt-5 space-y-2 border-t pt-4 text-sm">
-                <p className="flex items-center justify-between">
-                    <span>${studio.hourlyRate}/hr &times; {hours} hr</span>
-                    <span className="text-foreground font-medium">${subtotal}</span>
-                </p>
-                <p className="flex items-center justify-between">
-                    <span>Security deposit</span>
-                    <span className="text-foreground font-medium">
-                        ${studio.securityDeposit}
+        <form onSubmit={handleBooking}>
+            <div className="border-border bg-card rounded-3xl border p-6">
+                <p className="text-primary text-3xl font-bold">
+                    ${studio.hourlyRate}
+                    <span className="text-muted-foreground text-base font-normal">
+                        /hour
                     </span>
                 </p>
-                <p className="text-foreground text-base flex items-center justify-between font-semibold">
-                    <span>Total</span>
-                    <span>${total}</span>
+
+                <div className="mt-5 grid gap-4">
+                    <div className="grid gap-2">
+                        <Label htmlFor="booking-date">Date</Label>
+                        <Input
+                            id="booking-date"
+                            type="date"
+                            min={today}
+                            name="bookingDate"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="grid gap-2">
+                            <Label htmlFor="booking-time">Start time</Label>
+                            <Input
+                                id="booking-time"
+                                type="time"
+                                name="bookingTime"
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="booking-hours">Duration (hr)</Label>
+                            <Input
+                                id="booking-hours"
+                                type="number"
+                                min="1"
+                                max={12}
+                                value={hours}
+                                onChange={(e) => setHours(Number(e.target.value))}
+                                name="bookingHour"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Price breakdown */}
+                <div className="border-border text-muted-foreground mt-5 space-y-2 border-t pt-4 text-sm">
+                    <p className="flex items-center justify-between">
+                        <span>${studio.hourlyRate}/hr &times; {hours} hr</span>
+                        <span className="text-foreground font-medium">${subtotal}</span>
+                    </p>
+                    <p className="flex items-center justify-between">
+                        <span>Security deposit</span>
+                        <span className="text-foreground font-medium">
+                            ${studio.securityDeposit}
+                        </span>
+                    </p>
+                    <p className="text-foreground text-base flex items-center justify-between font-semibold">
+                        <span>Total</span>
+                        <span>${total}</span>
+                    </p>
+                </div>
+
+                <Button type="submit" className="mt-5 w-full cursor-pointer">Book Now</Button>
+                <p className="text-muted-foreground mt-3 text-center text-xs">
+                    We&apos;ll confirm instantly — nothing is charged until you&apos;re ready.
                 </p>
             </div>
-
-            <Button
-                className="mt-5 w-full cursor-pointer"
-                onClick={handleBooking}
-            >
-                Book Now
-            </Button>
-            <p className="text-muted-foreground mt-3 text-center text-xs">
-                We&apos;ll confirm instantly — nothing is charged until you&apos;re ready.
-            </p>
-        </div>
+        </form>
     );
 };
 

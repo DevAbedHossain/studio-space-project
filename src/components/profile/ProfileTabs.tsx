@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { signOut, useSession } from "@/lib/auth-client";
-
 import {
     UserRound,
     Building2,
@@ -15,7 +14,6 @@ import {
     ChevronRight,
     Camera,
 } from "lucide-react";
-
 import {
     Card,
     CardContent,
@@ -23,16 +21,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs";
-
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
@@ -40,46 +36,8 @@ import MyStudios from "@/components/profile/MyStudios";
 
 const ProfileTabs = () => {
 
-    const { data: session, isPending } = useSession();
+    const { data: session } = useSession();
     const user = session?.user;
-
-    if (isPending) {
-        return (
-            <div className="flex min-h-[40vh] items-center justify-center">
-                <p className="text-sm text-muted-foreground">Loading profile...</p>
-            </div>
-        );
-    }
-
-    if (!user) {
-        return (
-            <div className="flex min-h-[60vh] items-center justify-center px-4">
-                <Card className="w-full max-w-md text-center">
-                    <CardContent className="pt-8">
-                        <UserRound className="mx-auto mb-4 size-12 text-muted-foreground" />
-                        <h2 className="text-xl font-bold">Login Required</h2>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                            Please sign in to access your StudioSpace profile.
-                        </p>
-                        <Link
-                            href="/login"
-                            className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700"
-                        >
-                            Sign In
-                        </Link>
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
-
-    const initials =
-        user.name
-            ?.split(" ")
-            .map((part) => part[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase() || "US";
 
     return (
         <Tabs
@@ -95,21 +53,17 @@ const ProfileTabs = () => {
                     <div className="-mt-10 px-5">
                         <Avatar className="size-20 border-4 border-white shadow-md dark:border-card">
                             <AvatarImage
-                                src={user.image || ""}
-                                alt={user.name || "User"}
+                                src={user?.image || ""}
+                                alt={user?.name || "User"}
                             />
-
-                            <AvatarFallback className="bg-violet-100 text-xl font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-                                {initials}
-                            </AvatarFallback>
                         </Avatar>
 
                         <h2 className="mt-3 truncate text-lg font-bold">
-                            {user.name || "StudioSpace User"}
+                            {user?.name || "StudioSpace User"}
                         </h2>
 
                         <p className="truncate text-sm text-muted-foreground">
-                            {user.email}
+                            {user?.email}
                         </p>
 
                         <Badge className="my-4 border-0 bg-violet-100 text-violet-700 hover:bg-violet-100 dark:bg-violet-950 dark:text-violet-300">
@@ -192,20 +146,17 @@ const ProfileTabs = () => {
                             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                                 <Avatar className="size-24 border-4 border-violet-100">
                                     <AvatarImage
-                                        src={user.image || ""}
-                                        alt={user.name || "User"}
+                                        src={user?.image || ""}
+                                        alt={user?.name || "User"}
                                     />
-                                    <AvatarFallback className="bg-violet-100 text-2xl font-bold text-violet-700 dark:bg-violet-950 dark:text-violet-300">
-                                        {initials}
-                                    </AvatarFallback>
                                 </Avatar>
 
                                 <div className="flex-1">
                                     <h2 className="text-2xl font-bold">
-                                        {user.name || "StudioSpace User"}
+                                        {user?.name || "StudioSpace User"}
                                     </h2>
                                     <p className="mt-1 text-sm text-muted-foreground">
-                                        {user.email}
+                                        {user?.email}
                                     </p>
                                     <Badge variant="secondary" className="mt-3">
                                         Member
@@ -233,7 +184,7 @@ const ProfileTabs = () => {
                                             Full Name
                                         </p>
                                         <p className="mt-1 break-words font-semibold">
-                                            {user.name || "Not provided"}
+                                            {user?.name || "Not provided"}
                                         </p>
                                     </div>
                                 </div>
@@ -247,7 +198,7 @@ const ProfileTabs = () => {
                                             Email Address
                                         </p>
                                         <p className="mt-1 break-all font-semibold">
-                                            {user.email}
+                                            {user?.email}
                                         </p>
                                     </div>
                                 </div>
@@ -296,7 +247,7 @@ const ProfileTabs = () => {
                         </CardHeader>
 
                         <CardContent>
-                            <MyStudios ownerEmail={user.email} />
+                            <MyStudios ownerEmail={user?.email ?? ""} />
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -353,18 +304,6 @@ const ProfileTabs = () => {
                                 >
                                     Edit
                                 </Link>
-                            </div>
-
-                            <div className="flex items-center justify-between gap-4 rounded-xl border p-4">
-                                <div>
-                                    <h3 className="font-semibold">Account Security</h3>
-                                    <p className="mt-1 text-sm text-muted-foreground">
-                                        Manage your password and account access.
-                                    </p>
-                                </div>
-                                <Button variant="outline" size="sm" disabled>
-                                    Manage
-                                </Button>
                             </div>
 
                             <div className="flex items-center justify-between gap-4 rounded-xl border p-4">
