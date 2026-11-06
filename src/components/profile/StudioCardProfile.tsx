@@ -6,7 +6,12 @@ import { MapPin, Star, Users, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IStudio } from "@/type/Studios";
 
+
 const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
+
+    const handleDeleteStudio = (id: string) => {
+
+    }
 
     return (
         <div className="bg-card border-border group flex flex-col overflow-hidden rounded-3xl border sm:flex-row">
@@ -71,14 +76,14 @@ const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
                     </Button>
 
 
-                    <Button size="sm" >
-                        <Pencil className="size-4" />
-                        Edit
-                    </Button>
+                    <Link href={`/studios/${studio._id}/edit`}>
+                        <Button size="sm" >
+                            <Pencil className="size-4" />
+                            Edit
+                        </Button>
+                    </Link>
 
-
-
-                    <Button variant="destructive" size="sm">
+                    <Button onSubmit={() => handleDeleteStudio(studio._id)} variant="destructive" size="sm">
                         <Trash2 className="size-4" />
                         Delete
                     </Button>

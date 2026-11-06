@@ -8,7 +8,7 @@ const CategoryDetailsPage = async ({ params }: { params: Promise<{ category: str
 
     const { category } = await params;
 
-    const res = await fetch(`http://localhost:8000/studios/category/${category}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/category/${category}`);
     const stuidos = await res.json();
 
     // UI-only: make the slug readable for display

@@ -10,14 +10,16 @@ import {
 } from "lucide-react";
 import { IStudio } from "@/type/Studios";
 import BookingForm from "@/components/studios/BookingForm";
-import { Button } from "@/components/ui/button";
 
 
 const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
     const { id } = await params;
 
-    const res = await fetch(`http://localhost:8000/studios/${id}`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, { cache: "no-store" });
+    if (!res.ok) {
+        throw new Error("Failed to fetch studio");
+    }
     const studio: IStudio = await res.json();
 
 

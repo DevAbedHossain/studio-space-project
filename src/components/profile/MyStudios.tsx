@@ -23,7 +23,7 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
                 setError("");
 
                 const res = await fetch(
-                    `http://localhost:8000/studios/owner/${encodeURIComponent(ownerEmail)}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/studios/owner/${encodeURIComponent(ownerEmail)}`
                 );
 
                 if (!res.ok) {
@@ -75,7 +75,7 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
 
     const handleDelete = async (studio: IStudio) => {
         try {
-            const res = await fetch(`http://localhost:8000/studios/${studio._id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studio._id}`, {
                 method: "DELETE",
             });
 
@@ -113,8 +113,6 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
                         <StudioCardProfile
                             key={studio._id}
                             studio={studio}
-                            onEdit={handleEdit}
-                            onDelete={handleDelete}
                         />
                     ))}
                 </div>
