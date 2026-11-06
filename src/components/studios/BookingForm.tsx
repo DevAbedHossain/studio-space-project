@@ -6,9 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { IStudio } from "@/type/Studios";
+import { useSession } from "@/lib/auth-client";
 
 const BookingForm = ({ studio }: { studio: IStudio }) => {
-
+    const { data: session } = useSession();
+    const user = session?.user;
     const [hours, setHours] = useState(1);
 
 
@@ -17,12 +19,36 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    const handleBooking = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleBooking = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const booking = Object.fromEntries(formData.entries());
 
-        console.log(booking, "Form data")
+        const data = {
+            userName: user?.name,
+            userEmail: user?.email,
+            userImage: user?.image,
+            ...booking,
+            ...studio,
+            userBookingDate: new Date(),
+        }
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+        const result = await res.json();
+        console.log(result, "res data")
+
+        if (result.insertedId) {
+            toast.add({
+                title: "success",
+                description: "successfully booked"
+            })
+        }
     }
 
     return (
