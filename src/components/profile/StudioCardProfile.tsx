@@ -5,12 +5,33 @@ import Link from "next/link";
 import { MapPin, Star, Users, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { IStudio } from "@/type/Studios";
+import { toast } from "../ui/toast";
+import { useRouter } from "next/navigation";
 
 
 const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
 
-    const handleDeleteStudio = (id: string) => {
+    const router = useRouter();
 
+    const handleDeleteStudio = async (id: string) => {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, {
+            method: "DELETE",
+        })
+
+        if (!res.ok) {
+            throw new Error("Failed to delete studio");
+        }
+
+        const result = await res.json();
+        console.log(result, "data delete")
+
+        if (result.deletedCount > 0) {
+            toast.add({
+                title: "success",
+                description: "successfully delete studio"
+            })
+            router.refresh();
+        }
     }
 
     return (
@@ -83,7 +104,7 @@ const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
                         </Button>
                     </Link>
 
-                    <Button onSubmit={() => handleDeleteStudio(studio._id)} variant="destructive" size="sm">
+                    <Button onClick={() => handleDeleteStudio(studio._id)} variant="destructive" size="sm">
                         <Trash2 className="size-4" />
                         Delete
                     </Button>
