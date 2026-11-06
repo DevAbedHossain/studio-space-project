@@ -11,9 +11,16 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # Auth & database
 
 - better-auth with the MongoDB adapter (`@better-auth/mongo-adapter`), connected to MongoDB **Atlas** via the `MONGO_DB_URL` env var (required — `src/lib/auth.ts` throws at import time if missing; db name `studiospace`). A driver auth failure (`MongoServerError: bad auth`) only surfaces as an *empty-body 500* on sign-up/sign-in requests — verify connectivity with `node --env-file=.env diag-auth.mjs`.
-- `.env` needs `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `MONGO_DB_URL`, plus social provider keys `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` and `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` (all configured in `socialProviders` in `src/lib/auth.ts`). There is no `.env.example`.
+- `.env` (no `.env.example`) needs `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `MONGO_DB_URL`, social provider keys `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` and `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` (all configured in `socialProviders` in `src/lib/auth.ts`), and `NEXT_PUBLIC_API_URL` (see below).
 - All auth endpoints are handled by the catch-all route `src/app/api/auth/[...all]/route.ts` (`toNextJsHandler`); don't create individual `/api/auth/*` handlers.
 - Login/register pages live in the route group `src/app/(author)/` — the group stays out of the URL, so paths are `/login` and `/register`. Client-side auth calls use `src/lib/auth-client.ts` (`authClient`, `signIn`, `signUp`, `useSession`).
+
+# External API (data)
+
+- This app is frontend-only for domain data. All studio/booking reads and writes go to a **separate Express 5 + MongoDB backend** in the sibling repo `../server-back-end` (start it with `node index.js`; default port `8000`, set via `NEXT_PUBLIC_API_URL`, currently `http://localhost:8000`).
+- Resource endpoints used: `/studios`, `/studios/[id]`, `/studios/owner/[email]`, `/studios/category/[category]`, `/booking` (POST), `/booking/[ownerEmail]`. If a page shows stale/failed data, the backend isn't running — don't add local API routes for studio data.
+- The MongoDB connection in `src/lib/auth.ts` is for better-auth session/collection storage only; studio documents live in the backend's database, not this connection.
+- The `IStudio` shape is `src/type/Studios.ts`; docs carry string `_id` (Mongo ObjectId).
 
 # Commands
 

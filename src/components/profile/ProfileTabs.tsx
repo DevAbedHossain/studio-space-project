@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 import MyStudios from "@/components/profile/MyStudios";
+import MyBookings from "./MyBookings";
 
 const ProfileTabs = () => {
 
@@ -100,6 +101,15 @@ const ProfileTabs = () => {
                             >
                                 <Plus className="size-4" />
                                 Add Studio
+                                <ChevronRight className="ml-auto size-4" />
+                            </TabsTrigger>
+
+                            <TabsTrigger
+                                value="my-booking"
+                                className="h-11 justify-start gap-3 rounded-lg px-3 text-sm data-active:bg-violet-600 data-active:text-white data-active:shadow-sm"
+                            >
+                                <Plus className="size-4" />
+                                My Booking
                                 <ChevronRight className="ml-auto size-4" />
                             </TabsTrigger>
 
@@ -276,6 +286,24 @@ const ProfileTabs = () => {
                                 <Plus className="mr-2 size-4" />
                                 Create Studio Listing
                             </Link>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* My booking tab */}
+                <TabsContent value="my-booking" className="mt-0">
+                    <Card className="border shadow-sm">
+                        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <CardTitle className="text-xl">My Bookings</CardTitle>
+                                <CardDescription className="mt-2">
+                                    Manage the creative spaces you have Booked on StudioSpace.
+                                </CardDescription>
+                            </div>
+                        </CardHeader>
+
+                        <CardContent>
+                            <MyBookings ownerEmail={user?.email ?? ""} />
                         </CardContent>
                     </Card>
                 </TabsContent>

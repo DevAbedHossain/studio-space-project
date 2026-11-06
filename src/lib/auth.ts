@@ -15,6 +15,15 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
+    account: {
+        accountLinking: {
+            // Without an email verification flow, email/password users are
+            // never `emailVerified` — requiring it would make every social
+            // sign-in with a matching email fail with "account not linked".
+            trustedProviders: ["google", "github"],
+            requireLocalEmailVerified: false,
+        },
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
