@@ -4,6 +4,7 @@ import { IStudio } from "@/type/Studios";
 
 
 const StudiosPage = async () => {
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, { cache: "no-store" });
     const studios = await res.json();
 

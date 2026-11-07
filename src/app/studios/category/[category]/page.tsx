@@ -2,14 +2,14 @@ import StudioCard from '@/components/shared/StudioCard';
 import { IStudio } from '@/type/Studios';
 import Link from 'next/link';
 import { ArrowRight, SearchX } from 'lucide-react';
-import { getTokenFromClient } from '@/lib/getTokenFromClient';
+import { getTokenFromServer } from '@/lib/getTokenFromServer';
 
 
 const CategoryDetailsPage = async ({ params }: { params: Promise<{ category: string }> }) => {
 
     const { category } = await params;
 
-    const token = await getTokenFromClient();
+    const token = await getTokenFromServer();
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/category/${category}`, {
         headers: {
