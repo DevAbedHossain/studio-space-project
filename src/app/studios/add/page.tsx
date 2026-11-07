@@ -1,16 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, UserRound } from "lucide-react";
-import { useSession } from "@/lib/auth-client";
+import { ArrowLeft } from "lucide-react";
 import AddStudioForm from "@/components/profile/AddStudioForm";
 
 const AddStudioPage = () => {
-    const { data: session, isPending } = useSession();
-    const user = session?.user;
-    const router = useRouter();
-
 
     return (
         <section className="py-10 sm:py-14">

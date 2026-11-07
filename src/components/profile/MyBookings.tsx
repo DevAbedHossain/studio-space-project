@@ -13,6 +13,7 @@ import {
 import { IBooking } from "@/type/Booking";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 
 const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
@@ -29,8 +30,14 @@ const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
                 setLoading(true);
                 setError("");
 
+                const token = await getTokenFromClient();
+
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/booking/${encodeURIComponent(ownerEmail)}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/booking/${encodeURIComponent(ownerEmail)}`, {
+                    headers: {
+                        authorization: `Bearar ${token}`
+                    }
+                }
                 );
 
                 if (!res.ok) {
@@ -79,10 +86,15 @@ const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
         try {
             setCancellingId(booking._id);
 
+            const token = await getTokenFromClient();
+
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/booking/${booking._id}`,
                 {
                     method: "DELETE",
+                    headers: {
+                        authorization: `Bearar ${token}`
+                    }
                 }
             );
 

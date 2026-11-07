@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { IStudio } from "@/type/Studios";
 import { toast } from "../ui/toast";
 import { redirect } from "next/navigation";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 export interface StudioFormData {
     title: string;
@@ -55,10 +56,12 @@ const StudioForm = ({ studio }: { studio: IStudio }) => {
             overview: String(formData.get("overview") ?? ""),
         };
 
+        const token = await getTokenFromClient();
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studio._id}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
+                authorization: `Bearar ${token}`
             },
             body: JSON.stringify(entries),
         });

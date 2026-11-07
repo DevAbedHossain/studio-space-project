@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { IStudio } from "@/type/Studios";
 import { useSession } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const BookingForm = ({ studio }: { studio: IStudio }) => {
     const { data: session } = useSession();
@@ -24,6 +25,13 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
         const formData = new FormData(e.currentTarget);
         const booking = Object.fromEntries(formData.entries());
 
+        if (!user) {
+            toast.add({
+                title: "warning",
+                description: "Need to login before booking!"
+            })
+        }
+
         const data = {
             userName: user?.name,
             userEmail: user?.email,
@@ -33,10 +41,13 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
             userBookingDate: new Date(),
         }
 
+        const token = await getTokenFromClient();
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                authorization: `Bearar ${token}`
             },
             body: JSON.stringify(data)
         })

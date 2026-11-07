@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "@better-auth/mongo-adapter";
+import { jwt } from "better-auth/plugins";
 
 const mongoDbUrl = process.env.MONGO_DB_URL;
 
@@ -15,14 +16,15 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
-    account: {
-        accountLinking: {
-            // Without an email verification flow, email/password users are
-            // never `emailVerified` — requiring it would make every social
-            // sign-in with a matching email fail with "account not linked".
-            trustedProviders: ["google", "github"],
-            requireLocalEmailVerified: false,
-        },
+    plugins: [
+        jwt(),
+    ],
+    session: {
+        cookieCache: {
+            enabled: true,
+            strategy: "jwt",
+            maxAge: 7 * 24 * 60 * 60,
+        }
     },
     socialProviders: {
         google: {

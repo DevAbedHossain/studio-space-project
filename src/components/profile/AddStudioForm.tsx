@@ -14,6 +14,7 @@ import { toast } from "../ui/toast";
 import { redirect } from "next/navigation";
 import React from "react";
 import { useSession } from "@/lib/auth-client";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 const AddStudioForm = () => {
 
@@ -61,10 +62,13 @@ const AddStudioForm = () => {
                 .filter(Boolean),
         };
 
+        const token = await getTokenFromClient();
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                authorization: `Bearar ${token}`
             },
             body: JSON.stringify({
                 ...addStudio,

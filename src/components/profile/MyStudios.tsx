@@ -6,6 +6,7 @@ import { PackageOpen } from "lucide-react";
 import { IStudio } from "@/type/Studios";
 import StudioCardProfile from "./StudioCardProfile";
 import { toast } from "@/components/ui/toast";
+import { getTokenFromClient } from "@/lib/getTokenFromClient";
 
 
 const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
@@ -22,8 +23,14 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
                 setLoading(true);
                 setError("");
 
+                const token = await getTokenFromClient();
+
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/studios/owner/${encodeURIComponent(ownerEmail)}`
+                    `${process.env.NEXT_PUBLIC_API_URL}/studios/owner/${encodeURIComponent(ownerEmail)}`, {
+                    headers: {
+                        authorization: `Bearar ${token}`
+                    }
+                }
                 );
 
                 if (!res.ok) {
@@ -74,9 +81,15 @@ const MyStudios = ({ ownerEmail }: { ownerEmail: string }) => {
     };
 
     const handleDelete = async (studio: IStudio) => {
+
+        const token = await getTokenFromClient();
+
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${studio._id}`, {
                 method: "DELETE",
+                headers: {
+                    authorization: `Bearar ${token}`
+                }
             });
 
             if (!res.ok) {

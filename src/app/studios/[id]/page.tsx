@@ -16,7 +16,8 @@ const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }
 
     const { id } = await params;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`);
+
     if (!res.ok) {
         throw new Error("Failed to fetch studio");
     }
