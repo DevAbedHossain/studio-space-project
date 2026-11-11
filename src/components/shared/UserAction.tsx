@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "@/lib/auth-client";
 import {
     Avatar,
-    AvatarFallback,
     AvatarImage,
 } from "@/components/ui/avatar";
 import {

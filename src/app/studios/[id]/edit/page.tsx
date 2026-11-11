@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { IStudio } from "@/type/Studios";
-import StudioForm from "@/components/profile/studioForm";
+import StudioForm from "@/components/profile/StudioForm";
+// import StudioForm from "@/components/profile/StudioForm";
+// import StudioForm from "@/components/profile/studioForm";
 
 interface EditStudioPageProps {
     params: Promise<{

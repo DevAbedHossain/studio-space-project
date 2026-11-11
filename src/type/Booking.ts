@@ -2,10 +2,14 @@ import { IStudio } from "./Studios";
 
 /**
  * A stored booking. The backend stores the booking form payload as-is,
- * which spreads the whole studio doc into it — so a booking carries all
+ * which spreads the studio doc into it — so a booking carries all
  * studio fields (flattened) plus its own booking fields.
  */
-export interface IBooking extends IStudio {
+export interface IBooking extends Omit<IStudio, "_id"> {
+    /** The booking's own Mongo id (NOT the studio's). */
+    _id: string;
+    /** Id of the booked studio, used to link back to its detail page. */
+    studioId: string;
     userName: string;
     userEmail: string;
     userImage?: string;

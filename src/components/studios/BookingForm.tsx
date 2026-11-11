@@ -31,28 +31,58 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
                 title: "warning",
                 description: "Need to login before booking!"
             })
-            redirect("/login")
+            redirect("/login");
+            return;
         }
+
+        const token = await getTokenFromClient();
+
+        if (!token) {
+            toast.add({
+                title: "warning",
+                description: "Session expired. Please login again!"
+            })
+            redirect("/login");
+            return;
+        }
+        // Give the booking its own _id (Mongo generates it). The studio's _id
+        // is kept separately as studioId — reusing it caused E11000 duplicate
+        // key errors on every booking after the first one for that studio.
+        const { _id: studioId, ...studioSnapshot } = studio;
 
         const data = {
             userName: user?.name,
             userEmail: user?.email,
             userImage: user?.image,
             ...booking,
-            ...studio,
+            ...studioSnapshot,
+            studioId,
             userBookingDate: new Date(),
         }
-
-        const token = await getTokenFromClient();
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                authorization: `Bearar ${token}`
+                authorization: `Bearer ${token}`
             },
             body: JSON.stringify(data)
         })
+
+        if (!res.ok) {
+            let message = "Booking failed. Please try again.";
+            try {
+                message = (await res.json())?.message || message;
+            } catch {
+                // non-JSON error response (e.g. HTML error page)
+            }
+            toast.add({
+                title: "error",
+                description: message
+            })
+            return;
+        }
+
         const result = await res.json();
         console.log(result, "res data")
 
@@ -61,6 +91,7 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
                 title: "success",
                 description: "successfully booked"
             })
+            redirect("/studios")
         }
     }
 

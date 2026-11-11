@@ -158,7 +158,7 @@ const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
                                 <div className="flex min-w-0 flex-1 flex-col p-5">
                                     <div>
                                         <Link
-                                            href={`/studios/${booking._id}`}
+                                            href={`/studios/${booking.studioId ?? booking._id}`}
                                             className="hover:text-primary text-lg font-semibold transition-colors"
                                         >
                                             {booking.title}
@@ -205,7 +205,7 @@ const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
                                             variant="outline"
                                             size="sm"
                                             nativeButton={false}
-                                            render={<Link href={`/studios/${booking._id}`} />}
+                                            render={<Link href={`/studios/${booking.studioId ?? booking._id}`} />}
                                         >
                                             View Details
                                         </Button>
