@@ -8,13 +8,12 @@ import { toast } from "@/components/ui/toast";
 import { IStudio } from "@/type/Studios";
 import { useSession } from "@/lib/auth-client";
 import { getTokenFromClient } from "@/lib/getTokenFromClient";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const BookingForm = ({ studio }: { studio: IStudio }) => {
     const { data: session } = useSession();
     const user = session?.user;
     const [hours, setHours] = useState(1);
-    const router = useRouter();
 
 
     const subtotal = studio.hourlyRate * hours;
@@ -32,7 +31,7 @@ const BookingForm = ({ studio }: { studio: IStudio }) => {
                 title: "warning",
                 description: "Need to login before booking!"
             })
-            router.push("/login");
+            redirect("/login")
         }
 
         const data = {
