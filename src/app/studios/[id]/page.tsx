@@ -10,13 +10,16 @@ import {
 } from "lucide-react";
 import { IStudio } from "@/type/Studios";
 import BookingForm from "@/components/studios/BookingForm";
+import StudioImage from "@/components/shared/StudioImage";
 
 
 const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
 
     const { id } = await params;
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/${id}`, {
+        next: { revalidate: 60 },
+    });
 
     if (!res.ok) {
         throw new Error("Failed to fetch studio");
@@ -41,10 +44,11 @@ const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }
                     <div>
                         {/* Hero image + badges */}
                         <div className="relative aspect-video overflow-hidden rounded-3xl">
-                            {/* eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts */}
-                            <img
+                            <StudioImage
                                 src={studio.imageUrl}
                                 alt={studio.title}
+                                priority
+                                sizes="(min-width: 1024px) 760px, 100vw"
                                 className="size-full object-cover"
                             />
 
@@ -116,13 +120,17 @@ const StudioDetailsPage = async ({ params }: { params: Promise<{ id: string }> }
                                 <h2 className="text-xl font-semibold">Gallery</h2>
                                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                                     {studio.gallery.map((imageUrl, ind) => (
-                                        // eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts
-                                        <img
+                                        <div
                                             key={ind}
-                                            src={imageUrl}
-                                            alt={`${studio.title} gallery image`}
-                                            className="border-border aspect-video w-full rounded-2xl border object-cover"
-                                        />
+                                            className="relative aspect-video overflow-hidden rounded-2xl border border-border"
+                                        >
+                                            <StudioImage
+                                                src={imageUrl}
+                                                alt={`${studio.title} gallery image ${ind + 1}`}
+                                                sizes="(min-width: 1024px) 620px, 100vw"
+                                                className="size-full object-cover"
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             </div>

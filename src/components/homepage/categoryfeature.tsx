@@ -1,13 +1,10 @@
 import Link from "next/link";
 import { IStudio } from "@/type/Studios";
+import StudioImage from "@/components/shared/StudioImage";
 
 
 
-const CategoryFeature = async () => {
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, { cache: "no-store" });
-    const studios = await res.json();
-
+const CategoryFeature = ({ studios }: { studios: IStudio[] }) => {
     const filterItem = studios.filter(
         (studio: IStudio, index: number, self: IStudio[]) =>
             index === self.findIndex(
@@ -45,10 +42,10 @@ const CategoryFeature = async () => {
                             className="group flex flex-col items-center gap-3"
                         >
                             <div className="border-border relative size-24 overflow-hidden rounded-full border-2 transition-all duration-300 group-hover:border-primary group-hover:shadow-lg sm:size-28">
-                                {/* eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts */}
-                                <img
+                                <StudioImage
                                     src={item.imageUrl}
                                     alt={item.category}
+                                    sizes="(min-width: 640px) 112px, 96px"
                                     className="size-full object-cover transition-transform duration-300 group-hover:scale-110"
                                 />
                             </div>

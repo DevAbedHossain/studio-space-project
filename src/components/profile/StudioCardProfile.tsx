@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { IStudio } from "@/type/Studios";
 import { toast } from "../ui/toast";
 import { useRouter } from "next/navigation";
+import StudioImage from "@/components/shared/StudioImage";
 
 
 const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
@@ -38,10 +39,10 @@ const StudioCardProfile = ({ studio }: { studio: IStudio }) => {
         <div className="bg-card border-border group flex flex-col overflow-hidden rounded-3xl border sm:flex-row">
             {/* Image */}
             <div className="border-border relative aspect-video overflow-hidden border-b sm:aspect-auto sm:w-56 sm:shrink-0 sm:border-b-0 sm:border-r">
-                {/* eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts */}
-                <img
+                <StudioImage
                     src={studio.imageUrl}
                     alt={studio.title}
+                    sizes="(min-width: 640px) 224px, 100vw"
                     className="size-full h-51 object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 

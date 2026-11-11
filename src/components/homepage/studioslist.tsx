@@ -1,11 +1,7 @@
 import { IStudio } from "@/type/Studios";
 import StudioCard from "@/components/shared/StudioCard";
 
-const StudiosList = async () => {
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios`, { cache: "no-store" });
-    const studios = await res.json();
-
+const StudiosList = ({ studios }: { studios: IStudio[] }) => {
     return (
         <section id="studios" className="border-b py-16 lg:py-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

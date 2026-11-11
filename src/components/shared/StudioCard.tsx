@@ -2,6 +2,7 @@ import { IStudio } from "@/type/Studios";
 import Link from "next/link";
 import { MapPin, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import StudioImage from "@/components/shared/StudioImage";
 
 const StudioCard = ({ studio }: { studio: IStudio }) => {
 
@@ -9,10 +10,10 @@ const StudioCard = ({ studio }: { studio: IStudio }) => {
         <div className="bg-card border-border group flex flex-col overflow-hidden rounded-3xl border">
             {/* Image */}
             <div className="border-border relative aspect-video overflow-hidden border-b">
-                {/* eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts */}
-                <img
+                <StudioImage
                     src={studio.imageUrl}
                     alt={studio.title}
+                    sizes="(min-width: 1024px) 384px, (min-width: 640px) 50vw, calc(100vw - 2rem)"
                     className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 

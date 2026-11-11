@@ -2,21 +2,16 @@ import StudioCard from '@/components/shared/StudioCard';
 import { IStudio } from '@/type/Studios';
 import Link from 'next/link';
 import { ArrowRight, SearchX } from 'lucide-react';
-import { getTokenFromServer } from '@/lib/getTokenFromServer';
 
 
 const CategoryDetailsPage = async ({ params }: { params: Promise<{ category: string }> }) => {
 
     const { category } = await params;
 
-    const token = await getTokenFromServer();
-
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/studios/category/${category}`, {
-        headers: {
-            authorization: `Bearar ${token}`
-        }
+        next: { revalidate: 60 },
     });
-    const stuidos = await res.json();
+    const stuidos: IStudio[] = await res.json();
 
     // UI-only: make the slug readable for display
     const displayCategory = decodeURIComponent(category);

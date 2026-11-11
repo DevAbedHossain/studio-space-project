@@ -14,6 +14,7 @@ import { IBooking } from "@/type/Booking";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { getTokenFromClient } from "@/lib/getTokenFromClient";
+import StudioImage from "@/components/shared/StudioImage";
 
 
 const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
@@ -146,10 +147,10 @@ const MyBookings = ({ ownerEmail }: { ownerEmail: string }) => {
                             >
                                 {/* Image */}
                                 <div className="border-border relative aspect-video overflow-hidden border-b sm:aspect-auto sm:w-56 sm:shrink-0 sm:border-b-0 sm:border-r">
-                                    {/* eslint-disable-next-line @next/next/no-img-element -- studio images are owner-provided and may not be whitelisted hosts */}
-                                    <img
+                                    <StudioImage
                                         src={booking.imageUrl}
                                         alt={booking.title}
+                                        sizes="(min-width: 640px) 224px, 100vw"
                                         className="size-full h-60 object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                 </div>
