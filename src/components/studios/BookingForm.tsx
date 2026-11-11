@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/toast";
 import { IStudio } from "@/type/Studios";
 import { useSession } from "@/lib/auth-client";
 import { getTokenFromClient } from "@/lib/getTokenFromClient";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 const BookingForm = ({ studio }: { studio: IStudio }) => {
     const { data: session } = useSession();
